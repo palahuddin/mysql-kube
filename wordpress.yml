@@ -21,7 +21,7 @@ spec:
     spec: 
       containers:
       - name: wp-app
-        image: harbor.jojonomic.io/jojolab/wp-app
+        image: harbor.jojonomic.io/jojolab/wordpress
         ports:
         - containerPort: 80
         
