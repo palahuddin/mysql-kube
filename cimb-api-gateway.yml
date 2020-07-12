@@ -1,0 +1,46 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cimb-api-gateway
+  labels:
+    name: cimb-api-gateway
+    app: cimb-api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cimb-api-gateway
+      app: cimb-api-gateway
+  template:
+    metadata:
+      name: wordpress-deployment
+      labels: 
+        name: cimb-api-gateway
+        app: cimb-api-gateway   
+    spec: 
+      containers:
+      - name: cimb-api-gateway-app
+        image: api-gateway
+        ports:
+        - containerPort: 80
+        
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cimb-api-gateway-service
+  labels: 
+    name: cimb-api-gateway-service
+    app: cimb-api-gateway   
+spec: 
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 31110
+  type: NodePort
+  selector:
+    name: cimb-api-gateway
+    app: cimb-api-gateway
+
