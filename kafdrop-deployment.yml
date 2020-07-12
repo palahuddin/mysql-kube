@@ -24,7 +24,7 @@ spec:
 
 ---
 apiVersion: v1
-kind: Deployment
+kind: service
 metadata:
   name: kafdrop-service
   labels:
