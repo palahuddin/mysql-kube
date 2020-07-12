@@ -12,9 +12,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/data/mnt"
-
 ---
-
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -38,12 +36,11 @@ spec:
   - port: 3306
     targetPort: 3306
     nodePort: 30006
-  type: ClusterIP
+  type: NodePort 
   selector:
     app: mysql
-
+  clusterIP: None
 ---
-
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
