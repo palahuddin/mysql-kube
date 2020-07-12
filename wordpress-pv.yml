@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wordpress-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/html"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wordpress-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-app-deployment
+  labels:
+    name: wordpress-app-deployment
+    app: wordpress-app-demo-kube
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: wordpress-app-deployment
+      app: wordpress-app-demo-kube
+  template:
+    metadata:
+      name: wordpress-deployment
+      labels: 
+        name: wordpress-app-deployment
+        app: wordpress-app-demo-kube   
+    spec: 
+      containers:
+      - name: wp-app
+        image: harbor.jojonomic.io/jojolab/wordpress
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: wordpress-persistent-storage
+            mountPath: /var/www/html/wordpress
+      volumes:
+      - name: wordpress-persistent-storage
+        persistentVolumeClaim:
+          claimName: wordpress-pv-claim
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-service
+  labels: 
+    name: wordpress-service
+    app: wordpress-app-demo-kube   
+spec: 
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 31000
+  type: NodePort
+  selector:
+    name: wordpress-app-deployment
+    app: wordpress-app-demo-kube
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-mysql-deployment
+  labels:
+    app: wordpress-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: wordpress-mysql-deployment
+      app: wordpress-app-demo-kube 
+  template:
+    metadata:
+      name: wp-mysql
+      labels: 
+        name: wordpress-mysql-deployment
+        app: wordpress-app-demo-kube   
+    spec: 
+      containers:
+      - name: wp-app
+        image: harbor.jojonomic.io/jojolab/wp-mysql
+        ports:
+        - containerPort: 3306
+        
+        
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wp-mysql
+  labels: 
+    name: wp-mysql-service
+    app: wordpress-app-demo-kube   
+spec: 
+  ports:
+  - port: 3306
+    targetPort: 3306
+    nodePort: 31001
+  type: NodePort
+  selector:
+    name: wordpress-mysql-deployment
+    app: wordpress-app-demo-kube
+
