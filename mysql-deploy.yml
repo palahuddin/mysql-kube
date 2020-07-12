@@ -64,7 +64,7 @@ spec:
           name: mysql
         volumeMounts:
         - name: mysql-persistent-storage
-          mountPath: /data/mnt/data/var/lib/mysql
+          mountPath: /data/mnt/data
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
