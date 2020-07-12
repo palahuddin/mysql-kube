@@ -34,7 +34,7 @@ spec:
   - port: 9000
     targetPort: 9000
     nodePort: 30004
-  type: nodePort
+  type: NodePort
   selector:
     name: kafdrop-app
     app: kafdrop-app-deployment 
