@@ -7,11 +7,11 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 3Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/mnt"
+    path: "/data/db"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -23,46 +23,50 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 3Gi
+      storage: 10Gi
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
-spec:
+  name: wp-mysql
+  labels: 
+    name: wp-mysql-service
+    app: wordpress-app-demo-kube   
+spec: 
   ports:
   - port: 3306
     targetPort: 3306
-    nodePort: 30006
-  type: NodePort 
+    nodePort: 31006
+  type: NodePort
   selector:
-    app: mysql
+    name: wordpress-mysql-deployment
+    app: wordpress-app-demo-kube
   
 ---
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: wordpress-mysql-deployment
+  labels:
+    app: wordpress-mysql
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: mysql
-  strategy:
-    type: Recreate
+      name: wordpress-mysql-deployment
+      app: wordpress-app-demo-kube 
   template:
     metadata:
-      labels:
-        app: mysql
-    spec:
+      name: wp-mysql
+      labels: 
+        name: wordpress-mysql-deployment
+        app: wordpress-app-demo-kube   
+    spec: 
       containers:
-      - image: mysql:5.6
-        name: mysql
-        env:
-          # Use secret in real usage
-        - name: MYSQL_ROOT_PASSWORD
-          value: password
+      - name: wp-app
+        image: harbor.jojonomic.io/jojolab/wp-mysql
         ports:
         - containerPort: 3306
           name: mysql
