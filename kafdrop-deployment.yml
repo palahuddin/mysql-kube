@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: kafdrop-app
   labels:
+    name: kafdrop-app
     app: kafdrop-app-deployment
 spec: 
   replicas: 1
