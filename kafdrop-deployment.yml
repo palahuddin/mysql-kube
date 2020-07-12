@@ -21,6 +21,9 @@ spec:
       containers:
       - name: kafdrop-app
         image: obsidiandynamics/kafdrop
+        env:
+        - name: KAFKA_BROKERCONNECT
+          value: "172.168.0.55:9092"
         ports:
         - containerPort: 9000
 
