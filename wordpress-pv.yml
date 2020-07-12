@@ -34,7 +34,7 @@ metadata:
     name: wordpress-app-deployment
     app: wordpress-app-demo-kube
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       name: wordpress-app-deployment
