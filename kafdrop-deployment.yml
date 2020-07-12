@@ -15,6 +15,7 @@ spec:
     metadata:
       name: kafdrop-app
       labels:
+        name: kafdrop-app
         app: kafdrop-app-deployment
     spec:
       containers:
