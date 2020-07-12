@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafdrop-app
+  labels:
+    app: kafdrop-app-deployment
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kafdrop-app
+      app: kafdrop-app-deployment
+  template:
+    metadata:
+      name: kafdrop-app
+      labels:
+        app: kafdrop-app-deployment
+    spec:
+      containers:
+      - name: kafdrop-app
+        image: obsidiandynamics/kafdrop
+        ports:
+        - containerPort: 9000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafdrop-service
+  labels:
+    app: kafdrop-app-deployment
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+    nodePort: 30004
+  type: nodePort
+  selector:
+    name: kafdrop-app
+    app: kafdrop-app-deployment 
+
+
