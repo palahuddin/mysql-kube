@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/mysql"
+    path: "/data/mysql-mount"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -64,7 +64,7 @@ spec:
           name: mysql
         volumeMounts:
         - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
+          mountPath: /data/mysql-mount/var/lib/mysql
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
